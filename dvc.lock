@@ -1,0 +1,102 @@
+schema: '2.0'
+stages:
+  prepare_dataset:
+    cmd: python3 src/stages/prepare_dataset.py
+    deps:
+    - path: data/Sleep_health_and_lifestyle_dataset.csv
+      hash: md5
+      md5: fc2e4b0df4073a4544b725b4540513b6
+      size: 24137
+    - path: src/config.yaml
+      hash: md5
+      md5: 9d7fdf5ba436f8ff14d5c84bff2542cf
+      size: 579
+    - path: src/stages/prepare_dataset.py
+      hash: md5
+      md5: d4f2c05bb55c62601c2712f2a8fa2e60
+      size: 2119
+    outs:
+    - path: data/df_clear.csv
+      hash: md5
+      md5: f656edb895b57fd0290e0174144d9e59
+      size: 23658
+  data_split:
+    cmd: python3 src/stages/data_splite.py
+    deps:
+    - path: data/df_clear.csv
+      hash: md5
+      md5: f656edb895b57fd0290e0174144d9e59
+      size: 23658
+    - path: src/config.yaml
+      hash: md5
+      md5: 9d7fdf5ba436f8ff14d5c84bff2542cf
+      size: 579
+    - path: src/stages/data_splite.py
+      hash: md5
+      md5: 382be79fe1dbc174e391a958e964946c
+      size: 876
+    outs:
+    - path: data/test_sleep.csv
+      hash: md5
+      md5: 6c3d8714d41ff056aa1362cc740b5942
+      size: 7287
+    - path: data/train_sleep.csv
+      hash: md5
+      md5: 4abd4fc91e00efada7040976537494a1
+      size: 16555
+  train:
+    cmd: python3 src/stages/train.py
+    deps:
+    - path: data/test_sleep.csv
+      hash: md5
+      md5: 6c3d8714d41ff056aa1362cc740b5942
+      size: 7287
+    - path: data/train_sleep.csv
+      hash: md5
+      md5: 4abd4fc91e00efada7040976537494a1
+      size: 16555
+    - path: src/config.yaml
+      hash: md5
+      md5: 9d7fdf5ba436f8ff14d5c84bff2542cf
+      size: 579
+    - path: src/model_scripts/train.py
+      hash: md5
+      md5: e49b787b8cfa78c501e591521fee4de1
+      size: 2949
+    - path: src/stages/train.py
+      hash: md5
+      md5: 5bcb0111ed2bb1e9f09a0e4c37541967
+      size: 264
+    outs:
+    - path: models/power.joblib
+      hash: md5
+      md5: 1b8ef837b31b8fb3f4cea9e3242731bd
+      size: 629
+    - path: models/sleep_disorder_model.joblib
+      hash: md5
+      md5: ea199662d2a4963a4794f5af6a7590c6
+      size: 6623303
+  test_model:
+    cmd: python3 src/stages/test_model.py
+    deps:
+    - path: data/test_sleep.csv
+      hash: md5
+      md5: 6c3d8714d41ff056aa1362cc740b5942
+      size: 7287
+    - path: models/sleep_disorder_model.joblib
+      hash: md5
+      md5: ea199662d2a4963a4794f5af6a7590c6
+      size: 6623303
+    - path: src/config.yaml
+      hash: md5
+      md5: 9d7fdf5ba436f8ff14d5c84bff2542cf
+      size: 579
+    - path: src/stages/test_model.py
+      hash: md5
+      md5: 9aa9c1a7487c3f679223fe5e5df48322
+      size: 1442
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 1b48b96c1da60d4aaf2d4723f66fdea0
+      size: 96

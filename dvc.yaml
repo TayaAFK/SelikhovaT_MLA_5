@@ -1,0 +1,41 @@
+stages:
+  prepare_dataset:
+    cmd: python3 src/stages/prepare_dataset.py
+    deps:
+    - src/stages/prepare_dataset.py
+    - src/config.yaml
+    - data/Sleep_health_and_lifestyle_dataset.csv
+    outs:
+    - data/df_clear.csv
+
+  data_split:
+    cmd: python3 src/stages/data_splite.py
+    deps:
+    - data/df_clear.csv
+    - src/stages/data_splite.py
+    - src/config.yaml
+    outs:
+    - data/train_sleep.csv
+    - data/test_sleep.csv
+
+  train:
+    cmd: python3 src/stages/train.py
+    deps:
+    - data/train_sleep.csv
+    - data/test_sleep.csv
+    - src/stages/train.py
+    - src/model_scripts/train.py
+    - src/config.yaml
+    outs:
+    - models/sleep_disorder_model.joblib
+    - models/power.joblib
+
+  test_model:
+    cmd: python3 src/stages/test_model.py
+    deps:
+    - data/test_sleep.csv
+    - models/sleep_disorder_model.joblib
+    - src/stages/test_model.py
+    - src/config.yaml
+    metrics:
+    - metrics.json
